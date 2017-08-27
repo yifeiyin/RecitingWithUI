@@ -48,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent)
     //
     sideListSecretMode = false;
 
-
 }
 
 MainWindow::~MainWindow()
@@ -109,18 +108,7 @@ void MainWindow::commandReceived()
         if (arg2 == "")
         { AddNewDialog("<font color=\"red\">Second argument cannot be empty.</font>"); return; }
 
-        for (int i = 0; i < wordbank.length(); i++)
-        {
-            if (wordbank[i].word == arg2)
-            {
-                AddNewDialog("<font color=\"red\">The entry cannot be added because an identical one was found.</font>");
-                return;
-            }
-        }
-
-        wordbank.push_back(Entry(arg2));
-        UpdateSideList();
-        AddNewDialog("<font color=\"blue\">The entry has been successfully added.</font>");
+        AddNewEntry(arg2);
     }
 
     else if (arg1 == "delete" || arg1 == "del")
@@ -138,7 +126,7 @@ void MainWindow::commandReceived()
                 return;
             }
         }
-        AddNewDialog("<font color=\"red\">The entry "+arg2+" cannot be found.</font>");
+        AddNewDialog("<font color=\"red\">The entry "+arg2+" couldn't be found.</font>");
     }
 
     else if (arg1 == "removeall")
@@ -175,12 +163,30 @@ void MainWindow::commandReceived()
             AddFrom(arg2);
     }
 
-    else if (arg1 == "k87n6b5vg4fh6g54fj")
+    else if (arg1 == "save")
+    {
+        if (arg2.isEmpty())
+            SaveAs();
+        else
+            SaveAs(arg2);
+    }
+
+    else if (arg1 == "j76h5gf7j65bv46h5g")
     {
 
     }
 
-    else if (arg1 == "j76h5gf7j65bv46h5g")
+    else if (arg1 == "jkiu54ewdvbnmkiu6")
+    {
+
+    }
+
+    else if (arg1 == "edfghjytrdvbny54e")
+    {
+
+    }
+
+    else if (arg1 == "rrhgyujhgwwsertyu87")
     {
 
     }
@@ -265,29 +271,27 @@ void MainWindow::AddNewEntry(QString str, bool slientMode)
             tmp.history = str.mid(pos2+2,(str.length()-1)-(pos2+2)+1);
     }
 
+    bool isAlreadyExist = false;
+    for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
     {
-        bool isAlreadyExist = false;
-        for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+        if (i->word == tmp.word)
         {
-            if (i->word == tmp.word)
-            {
-                isAlreadyExist = true;
-                break;
-            }
+            isAlreadyExist = true;
+            break;
         }
-        if (isAlreadyExist)
-        {
-            AddNewDialog("<font color=\"red\">The following entry cannot be added "
-                         "because an identical one was found.</font>");
-            AddNewDialog(ListAnEntry(tmp));
-        }
-        else
-        {
-            wordbank.push_back(tmp);
-            if (!slientMode)
+    }
+    if (isAlreadyExist)
+    {
+        AddNewDialog("<font color=\"red\">The following entry couldn't be added "
+                     "because an identical one was found.</font>");
+        AddNewDialog(ListAnEntry(tmp));
+    }
+    else
+    {
+        wordbank.push_back(tmp);
+        if (!slientMode)
             AddNewDialog("<font color=\"blue\">The entry has been successfully added.</font>");
-            UpdateSideList();
-        }
+        UpdateSideList();
     }
 }
 
@@ -316,13 +320,46 @@ void MainWindow::UpdateSideList()
     }
 }
 
-void MainWindow::ExportTo(QString path) const
+void MainWindow::SaveAs(QString path)
 {
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        AddNewDialog("<font color=\"red\">The file could not be opened.</font>");
+        return;
+    }
 
+    QTextStream out(&file);
+    for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+    {
+        out << i->word;
+        if (!i->remark.isEmpty())
+            out << " " << i->remark;
+        out << " %" << i->status;
+        if (!i->history.isEmpty())
+            out << i->history;
+        out << "\n";
+    }
+
+    out.reset(); // randomly added without any reason
+    file.close();
+    AddNewDialog("<font color=\"blue\">The file has been successfully saved.</font>");
 }
 
 void MainWindow::AddFrom(QString path)
 {
+    /*
+    QFile file("/proc/modules");
+     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+         return;
+
+     QTextStream in(&file);
+     QString line = in.readLine();
+     while (!line.isNull()) {
+         process_line(line);
+         line = in.readLine();
+     }
+     */
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -343,8 +380,9 @@ void MainWindow::AddFrom(QString path)
 
         AddNewEntry(str, true);
     }
+    file.close();
     UpdateSideList();
-//  [^]  AddNewDialog();
+    AddNewDialog("<font color=\"blue\">The file has been successfully added.</font>");
 }
 
 void MainWindow::OpenFrom(QString path)

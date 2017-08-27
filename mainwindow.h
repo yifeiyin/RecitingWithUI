@@ -66,7 +66,7 @@ private:
     //
     // Functions associate with files
     //
-    void ExportTo(QString path = DEFPATH) const;
+    void SaveAs(QString path = DEFPATH);
     void AddFrom(QString path = DEFPATH);
     void OpenFrom(QString path = DEFPATH);
 };
