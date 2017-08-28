@@ -70,6 +70,8 @@ private:
     void SaveAs(QString path = DEFPATH);
     void AddFrom(QString path = DEFPATH);
     void OpenFrom(QString path = DEFPATH);
+
+    void Say(QString str);
 };
 
 #endif // MAINWINDOW_H

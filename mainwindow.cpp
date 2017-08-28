@@ -149,21 +149,35 @@ void MainWindow::commandReceived()
 
     else if (arg1 == "list")
     {
-        if (wordbank.isEmpty())
+        if (arg2 == "")
         {
-            AddNewDialog("<font color=\"red\">The list is currently empty.</font>");
-            return;
+            if (wordbank.isEmpty())
+            {
+                AddNewDialog("<font color=\"red\">The list is currently empty.</font>");
+                return;
+            }
+            QString s;
+            s += "<b>List:</b><p style = \"margin:4px\">";
+            for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+            {
+                s+= ListAnEntry(*i);
+                s+="<br>";
+            }
+            s+="</p>";
+            AddNewDialog(s);
         }
-        QString s;
-        s += "<b>List:</b><p style = \"margin:4px\">";
-        for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+        else
         {
-            s+= ListAnEntry(*i);
-            s+="<br>";
+            for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+            {
+                if (i->word == arg2)
+                {
+                    ListAnEntry(*i);
+                    return;
+                }
+                AddNewDialog("red", "The entry "+arg2+" couldn't be found.");
+            }
         }
-        s+="</p>";
-
-        AddNewDialog(s);
     }
 
     else if (arg1 == "addfrom" || arg1 == "af")
@@ -182,9 +196,9 @@ void MainWindow::commandReceived()
             SaveAs(arg2);
     }
 
-    else if (arg1 == "j76h5gf7j65bv46h5g")
+    else if (arg1 == "start-practice" || arg1 == "start" || arg1 == "sp")
     {
-
+        StartPractice(arg2);
     }
 
     else if (arg1 == "jkiu54ewdvbnmkiu6")
@@ -215,7 +229,12 @@ void MainWindow::commandReceived()
 
 void MainWindow::inputBoxTextEdited()
 {
+    QString tmp = inputBox->text();
 
+    while (tmp.endsWith(" ") || tmp.endsWith("\n"))
+        tmp.chop(1);
+
+    inputBoxContent = tmp;
 }
 
 QString MainWindow::ListAnEntry(Entry & e) const
@@ -405,4 +424,43 @@ void MainWindow::OpenFrom(QString path)
 {
     wordbank.clear();
     AddFrom(path);
+}
+
+void MainWindow::Say(QString str)
+{
+    while (str.endsWith("\n") || str.endsWith(" "))
+        str.chop(1);
+
+    if (str.isEmpty())
+    {
+        AddNewDialog("red", "<i>An empty string has been passed to Say().</i>");
+        return;
+    }
+
+    QByteArray a = QString("say " + str).toLatin1();
+    system(a.data());
+}
+
+void MainWindow::StartPractice(QString arg)
+{
+    if (arg.isEmpty()) // [!]
+        arg = "";
+
+    QVector<Entry> wordid, wordsp;
+
+    for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+    {
+        if (i->status == Identify)
+            wordid.push_back(*i);
+        else if (i->status == Spell)
+            wordsp.push_back(*i);
+    }
+
+    for (QVector<Entry>::iterator i = wordid.begin(); i < wordbank.end(); i++)
+    {
+        AddNewDialog("Identify the word: <br><h1>" + i->word + "</h1>");
+
+    }
+
+
 }
