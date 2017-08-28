@@ -73,7 +73,7 @@ void MainWindow::commandReceived()
     QString arg = inputBox->text(); // arg: argument
     inputBox->clear();
 
-    AddNewDialog("<font color=\"gray\">" + arg + "</font>");
+    AddNewDialog("gray", arg);
 
     QString arg1, arg2;
     for (int i = 0; i < arg.length(); i++)
@@ -106,7 +106,7 @@ void MainWindow::commandReceived()
     else if (arg1 == "add")
     {
         if (arg2 == "")
-        { AddNewDialog("<font color=\"red\">Second argument cannot be empty.</font>"); return; }
+        { AddNewDialog("red", "Second argument cannot be empty."); return; }
 
         AddNewEntry(arg2);
     }
@@ -114,7 +114,7 @@ void MainWindow::commandReceived()
     else if (arg1 == "delete" || arg1 == "del")
     {
         if (arg2 == "")
-        { AddNewDialog("<font color=\"red\">Empty second argument.</font>"); return; }
+        { AddNewDialog("red", "Second argument cannot be empty."); return; }
 
         for (int i = 0; i < wordbank.length(); i++)
         {
@@ -122,18 +122,29 @@ void MainWindow::commandReceived()
             {
                 wordbank.remove(i);
                 UpdateSideList();
-                AddNewDialog("<font color=\"blue\">The entry has been successfully removed.</font>");
+                AddNewDialog("blue", "The entry has been successfully removed.");
                 return;
             }
         }
-        AddNewDialog("<font color=\"red\">The entry "+arg2+" couldn't be found.</font>");
+        AddNewDialog("red", "The entry "+arg2+" couldn't be found.");
     }
 
-    else if (arg1 == "removeall")
+    else if (arg1 == "reset")
     {
-        wordbank.clear();
-        UpdateSideList();
-        AddNewDialog("<font color=\"blue\">All entries have been successfully removed.</font>");
+        if (arg2 == "wordbank")
+        {
+            wordbank.clear();
+            UpdateSideList();
+            AddNewDialog("blue", "All entries have been successfully removed.");
+        }
+        else if (arg2 == "")
+        {
+            AddNewDialog("red", "Second argument cannot be empty.");
+        }
+        else
+        {
+            AddNewDialog("red", "Second argument is invalid.");
+        }
     }
 
     else if (arg1 == "list")
@@ -193,12 +204,12 @@ void MainWindow::commandReceived()
 
     else if (arg1 == "")
     {
-        AddNewDialog("<font color=\"gray\"><i>You have submitted an empty command.</i></font>");
+        AddNewDialog("gray", "<i>You have submitted an empty command.</i>");
     }
 
     else
     {
-        AddNewDialog("<font color=\"gray\"><i>Undefined command.</i></font>");
+        AddNewDialog("gray", "<i>Undefined command.</i>");
     }
 }
 
@@ -282,15 +293,15 @@ void MainWindow::AddNewEntry(QString str, bool slientMode)
     }
     if (isAlreadyExist)
     {
-        AddNewDialog("<font color=\"red\">The following entry couldn't be added "
-                     "because an identical one was found.</font>");
+        AddNewDialog("red", "The following entry couldn't be added "
+                     "because an identical one was found.");
         AddNewDialog(ListAnEntry(tmp));
     }
     else
     {
         wordbank.push_back(tmp);
         if (!slientMode)
-            AddNewDialog("<font color=\"blue\">The entry has been successfully added.</font>");
+            AddNewDialog("blue", "The entry has been successfully added.");
         UpdateSideList();
     }
 }
@@ -302,6 +313,11 @@ void MainWindow::AddNewDialog(QString msg)
     logBox->QAbstractScrollArea::verticalScrollBar()->setValue(
                 logBox->QAbstractScrollArea::verticalScrollBar()->maximum()
                 );
+}
+
+void MainWindow::AddNewDialog(QString color, QString msg)
+{
+    AddNewDialog("<font color=\"" + color + "\">" + msg + "</font>");
 }
 
 void MainWindow::ClearAllDialog()
@@ -325,7 +341,7 @@ void MainWindow::SaveAs(QString path)
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        AddNewDialog("<font color=\"red\">The file could not be opened.</font>");
+        AddNewDialog("red", "The file could not be opened.");
         return;
     }
 
@@ -343,7 +359,7 @@ void MainWindow::SaveAs(QString path)
 
     out.reset(); // randomly added without any reason
     file.close();
-    AddNewDialog("<font color=\"blue\">The file has been successfully saved.</font>");
+    AddNewDialog("blue", "The file has been successfully saved.");
 }
 
 void MainWindow::AddFrom(QString path)
@@ -363,7 +379,7 @@ void MainWindow::AddFrom(QString path)
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        AddNewDialog("<font color=\"red\">The file could not be opened.</font>");
+        AddNewDialog("red", "The file could not be opened.");
         return;
     }
     while(!file.atEnd())
@@ -382,7 +398,7 @@ void MainWindow::AddFrom(QString path)
     }
     file.close();
     UpdateSideList();
-    AddNewDialog("<font color=\"blue\">The file has been successfully added.</font>");
+    AddNewDialog("blue", "The file has been successfully added.");
 }
 
 void MainWindow::OpenFrom(QString path)

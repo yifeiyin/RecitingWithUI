@@ -46,6 +46,7 @@ private:
     // Functions associate with logBox
     //
     void AddNewDialog(QString msg);
+    void AddNewDialog(QString color, QString msg);
     void ClearAllDialog();
 
 
