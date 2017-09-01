@@ -487,7 +487,12 @@ void MainWindow::NextWord(QString arg)
     {
         currentWord->history.push_back('p');
         if (currentWord->history.endsWith("ppp")) // [^]
-            int ttt = 0;
+        {
+            Find(currentWord->word).status = Spell;
+            Find(currentWord->word).history.clear();
+            wordSp.push_back(*currentWord);
+            wordId.erase(currentWord);
+        }
     }
     else if (arg == "fail")
     {
@@ -496,6 +501,24 @@ void MainWindow::NextWord(QString arg)
     else
     {
 
+    }
+
+    currentWord++;
+    if (mode == IdentifyMode)
+    {
+        if (currentWord == wordId.end())
+        {
+            mode = SpellMode;
+            currentWord = wordSp.begin();
+        }
+    }
+    else if (mode == SpellMode)
+    {
+        if (currentWord == wordSp.end())
+        {
+            mode = DefaultMode;
+
+        }
     }
 }
 
@@ -510,4 +533,16 @@ QString MainWindow::Mask(QString & str)
             tmp.push_back('*');
     }
     return tmp;
+}
+
+Entry & MainWindow::Find(QString word)
+{
+    for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
+    {
+        if (i->word == word)
+            return *i;
+    }
+    Entry * tmp = new Entry;
+    AddNewDialog("red", "IN-PROGRAM ERROR: NOT FOUND THE WORD");
+    return *tmp;
 }

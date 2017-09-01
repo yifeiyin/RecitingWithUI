@@ -87,6 +87,8 @@ private:
     void NextWord(QString arg);
 
     QString Mask(QString & str);
+
+    Entry & Find(QString word, QVector<Entry> * entry = &wordbank);
 };
 
 #endif // MAINWINDOW_H
