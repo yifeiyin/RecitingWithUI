@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Setting up QListWidget ***sideList***
     //
     sideListSecretMode = false;
+    mode = DefaultMode;
 
 }
 
@@ -201,7 +202,7 @@ void MainWindow::commandReceived()
         StartPractice(arg2);
     }
 
-    else if (arg1 == "jkiu54ewdvbnmkiu6")
+    else if ((arg1 == "yes" || arg1 == "no") && mode != DefaultMode)
     {
 
     }
@@ -443,24 +444,70 @@ void MainWindow::Say(QString str)
 
 void MainWindow::StartPractice(QString arg)
 {
-    if (arg.isEmpty()) // [!]
+    if (arg.isEmpty()) // [^]
         arg = "";
 
-    QVector<Entry> wordid, wordsp;
+    wordId.clear();
+    wordSp.clear();
 
     for (QVector<Entry>::iterator i = wordbank.begin(); i < wordbank.end(); i++)
     {
         if (i->status == Identify)
-            wordid.push_back(*i);
+            wordId.push_back(*i);
         else if (i->status == Spell)
-            wordsp.push_back(*i);
+            wordSp.push_back(*i);
     }
 
-    for (QVector<Entry>::iterator i = wordid.begin(); i < wordbank.end(); i++)
+    currentWord = wordId.begin();
+    if (currentWord != wordId.end())
     {
-        AddNewDialog("Identify the word: <br><h1>" + i->word + "</h1>");
+        mode = IdentifyMode;
+        AddNewDialog("Identify the word: " + currentWord->word);
+    }
+    else
+    {
+        currentWord = wordSp.begin();
+        if (currentWord != wordSp.end())
+        {
+            mode = SpellMode;
+            AddNewDialog("Spell the word: " + Mask(currentWord->word));
+        }
+        else
+        {
+            currentWord = nullptr;
+            mode = DefaultMode;
+            AddNewDialog("blue", "You have learned all words.");
+        }
+    }
+}
+
+void MainWindow::NextWord(QString arg)
+{
+    if (arg == "pass")
+    {
+        currentWord->history.push_back('p');
+        if (currentWord->history.endsWith("ppp")) // [^]
+            int ttt = 0;
+    }
+    else if (arg == "fail")
+    {
+        currentWord->history.push_back('f');
+    }
+    else
+    {
 
     }
+}
 
-
+QString MainWindow::Mask(QString & str)
+{
+    QString tmp;
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (i == 0 || i == str.length() - 1 || str[i] == ' ')
+            tmp.push_back(str[i]);
+        else
+            tmp.push_back('*');
+    }
+    return tmp;
 }

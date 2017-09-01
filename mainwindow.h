@@ -12,6 +12,8 @@ class QLineEdit;
 class QTextEdit;
 class QListWidget;
 
+enum Mode { DefaultMode = 0, IdentifyMode, SpellMode };
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -35,9 +37,15 @@ private:
     QListWidget * sideList;
 
     bool sideListSecretMode;
+    Mode mode;
+
+    // bool monitorInputBoxContent;
+    QString inputBoxContent;
 
     QVector<Entry> wordbank;
 
+    QVector<Entry> wordId, wordSp;
+    QVector<Entry>::iterator currentWord;
 
     QString ListAnEntry(Entry & e) const;
     void AddNewEntry(QString str, bool slientMode = false);
@@ -71,7 +79,14 @@ private:
     void AddFrom(QString path = DEFPATH);
     void OpenFrom(QString path = DEFPATH);
 
+
     void Say(QString str);
+
+
+    void StartPractice(QString arg);
+    void NextWord(QString arg);
+
+    QString Mask(QString & str);
 };
 
 #endif // MAINWINDOW_H

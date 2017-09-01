@@ -3,7 +3,7 @@
 
 #include <QString>
 
-enum EntryStatus {Identify = 0, Spell, Finish, Pending};
+enum EntryStatus { Identify = 0, Spell, Finish, Pending };
 
 class Entry {
 public:
