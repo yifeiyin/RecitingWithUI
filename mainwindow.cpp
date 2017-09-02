@@ -4,6 +4,13 @@
 #include <QFile>
 #include <QTextCodec>
 
+/*  REMARKS:
+ *  [!] Need to impove
+ *  [^] Can be impoved
+ *  [?] (not in use)
+ *  [x] (not in use)
+ */
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -261,7 +268,7 @@ void MainWindow::commandReceived(QString input)
 
 void MainWindow::inputBoxTextEdited()
 {
-        UpdateSideList();
+        UpdateSideList(); // [!]
     if (mode == IdentifyMode)
     {
         commandReceived(inputBox->text());
@@ -527,6 +534,40 @@ void MainWindow::StartPractice(QString arg)
 
 void MainWindow::NextWord(QString arg)
 {
+/*
+*** pseudo-code ***
+[arg = "pass"]
+    add 'p'
+    [endsWith "ppp"]
+        [If thisWord.status is Identify]
+            Change thisWord.status
+            Delete from and Add to list
+            [If this list is empty]
+                Change mode
+                Reset pointer
+                [If new list is empty]
+                    Exit
+            pointer++
+            <Reaching end check>
+
+        [ELSE]
+            Change thisWord.status
+            Delete from the list
+            [If this list is empty]
+                Change mode
+                Exit
+            [ELSE]
+                pointer++
+                <Reaching end check>
+    [ELSE] (not 'ppp')
+        pointer++
+        <Reaching end check>
+
+[arg = "fail"]
+    add 'f'
+    pointer++
+    <Reaching end check>
+*/
 
     if (arg == "pass")
     {
@@ -612,8 +653,6 @@ void MainWindow::NextWord(QString arg)
         Say(currentWord->word);
         AddNewDialog("Spell the word: " + Mask(currentWord->word));
     }
-
-
 }
 
 QString MainWindow::Mask(QString & str)
