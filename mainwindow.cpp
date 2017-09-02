@@ -62,12 +62,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::displayReturnPressed()
 {
-
+    if (mode == SpellMode)
+    {
+        if (display->text() == currentWord->word)
+        {
+            display->clear();
+            NextWord("pass");
+        }
+        else
+        {
+            display->setStyleSheet("color: red");
+        }
+    }
+    else
+    {
+        display->clear();
+    }
 }
 
 void MainWindow::displayTextEdited()
 {
-
+    display->setStyleSheet("");
 }
 
 void MainWindow::commandReceived(QString input)
@@ -530,15 +545,17 @@ void MainWindow::NextWord(QString arg)
                 if (wordId.isEmpty()) // ------------------------------ Switch over to wordSp
                 {
                     mode = SpellMode;
+                    display->clear();
                     currentWord = wordSp.begin();
                     if (currentWord == wordSp.end()) // --------------- Switch over and then exit
                     {
+                        currentWord = nullptr;
                         mode = DefaultMode;
                         AddNewDialog("blue", "You have completed the list.");
                         return;
                     }
                 }
-                currentWord++;
+                // currentWord++ is not needed because of the erasing
                 if (currentWord == wordId.end()) // ------------------- Restart
                     currentWord = wordId.begin();
             }
@@ -551,11 +568,12 @@ void MainWindow::NextWord(QString arg)
                 wordSp.erase(currentWord);
                 if (wordSp.isEmpty()) // ------------------------------- Exit
                 {
+                    currentWord = nullptr;
                     mode = DefaultMode;
                     AddNewDialog("blue", "You have completed the list.");
                     return;
                 }
-                currentWord++;
+                // currentWord++ is not needed because of the erasing
                 if (currentWord == wordSp.end()) // ------------------- Restart
                     currentWord = wordSp.begin();
             }
@@ -565,6 +583,8 @@ void MainWindow::NextWord(QString arg)
             currentWord++;
             if (currentWord == wordSp.end()) // ------------------- Restart
                 currentWord = wordSp.begin();
+            if (currentWord == wordId.end())
+                currentWord = wordId.begin();
         }
     }
     else if (arg == "fail")
@@ -589,6 +609,7 @@ void MainWindow::NextWord(QString arg)
     }
     else if (mode == SpellMode)
     {
+        Say(currentWord->word);
         AddNewDialog("Spell the word: " + Mask(currentWord->word));
     }
 
