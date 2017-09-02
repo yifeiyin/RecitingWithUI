@@ -26,7 +26,7 @@ private slots:
     void displayReturnPressed();
     void displayTextEdited();
 
-    void commandReceived();
+    void commandReceived(QString input = "");
     void inputBoxTextEdited();
 
 private:
@@ -38,9 +38,6 @@ private:
 
     bool sideListSecretMode;
     Mode mode;
-
-    // bool monitorInputBoxContent;
-    QString inputBoxContent;
 
     QVector<Entry> wordbank;
 
@@ -88,7 +85,7 @@ private:
 
     QString Mask(QString & str);
 
-    Entry & Find(QString word, QVector<Entry> * entry = &wordbank);
+    Entry & Find(QString word);
 };
 
 #endif // MAINWINDOW_H

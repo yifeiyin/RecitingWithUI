@@ -69,12 +69,21 @@ void MainWindow::displayTextEdited()
 
 }
 
-void MainWindow::commandReceived()
+void MainWindow::commandReceived(QString input)
 {
-    QString arg = inputBox->text(); // arg: argument
-    inputBox->clear();
+    QString arg;
+    if (input == "")
+    {
+        arg = inputBox->text(); // arg: argument
+        inputBox->clear();
+        AddNewDialog("gray", arg);
+    }
+    else
+    {
+        arg = input;
+        AddNewDialog("lightgray", arg);
+    }
 
-    AddNewDialog("gray", arg);
 
     QString arg1, arg2;
     for (int i = 0; i < arg.length(); i++)
@@ -91,7 +100,8 @@ void MainWindow::commandReceived()
         }
     }
 
-    // For debug usage: AddNewDialog("arg1: " + arg1 + "<br>arg2: " + arg2);
+    // For debug usage:
+    // AddNewDialog("arg1: " + arg1 + "<br>arg2: " + arg2);
 
     if (arg1 == "help")
     {
@@ -202,14 +212,15 @@ void MainWindow::commandReceived()
         StartPractice(arg2);
     }
 
-    else if ((arg1 == "yes" || arg1 == "no") && mode != DefaultMode)
+    else if ((arg1 == "yes" || arg1 == "no" || arg1 == "pass" || arg1 == "fail") && mode != DefaultMode)
     {
-
+        NextWord((arg1 == "yes" || arg1 == "y" || arg1 == "pass")? "pass" : "fail" );
     }
 
-    else if (arg1 == "edfghjytrdvbny54e")
+    else if ((arg1 == "quit" || arg1 == "q") && mode != DefaultMode)
     {
-
+        currentWord = nullptr;
+        mode = DefaultMode;
     }
 
     else if (arg1 == "rrhgyujhgwwsertyu87")
@@ -230,12 +241,11 @@ void MainWindow::commandReceived()
 
 void MainWindow::inputBoxTextEdited()
 {
-    QString tmp = inputBox->text();
-
-    while (tmp.endsWith(" ") || tmp.endsWith("\n"))
-        tmp.chop(1);
-
-    inputBoxContent = tmp;
+    if (mode == IdentifyMode)
+    {
+        commandReceived(inputBox->text());
+        inputBox->clear();
+    }
 }
 
 QString MainWindow::ListAnEntry(Entry & e) const
@@ -350,7 +360,10 @@ void MainWindow::UpdateSideList()
     sideList->clear();
     for (int i = 0; i < wordbank.length(); i++)
     {
-        QListWidgetItem * item = new QListWidgetItem (wordbank[i].word);
+
+        QListWidgetItem * item = new QListWidgetItem (&Find(currentWord->word) == &wordbank[i]?
+                                                          ListAnEntry(wordbank[i]) :
+                                                          "> " + ListAnEntry(wordbank[i]));
         item->setCheckState(Qt::Unchecked);
         sideList->addItem(item);
     }
@@ -483,20 +496,64 @@ void MainWindow::StartPractice(QString arg)
 
 void MainWindow::NextWord(QString arg)
 {
+
     if (arg == "pass")
     {
         currentWord->history.push_back('p');
+        Find(currentWord->word).history.push_back('p');
         if (currentWord->history.endsWith("ppp")) // [^]
         {
-            Find(currentWord->word).status = Spell;
-            Find(currentWord->word).history.clear();
-            wordSp.push_back(*currentWord);
-            wordId.erase(currentWord);
+            if (currentWord->status == Identify) // =================== IDENTIFY
+            {
+                currentWord->status = Spell;
+                Find(currentWord->word).status = Spell;
+                currentWord->history.clear();
+                Find(currentWord->word).history.clear();
+                wordSp.push_back(*currentWord);
+                wordId.erase(currentWord);
+                if (wordId.isEmpty()) // ------------------------------ Switch over to wordSp
+                {
+                    mode = SpellMode;
+                    currentWord = wordSp.begin();
+                    if (currentWord == wordSp.end()) // --------------- Switch over and then exit
+                    {
+                        mode = DefaultMode;
+                        AddNewDialog("blue", "You have completed the list.");
+                        return;
+                    }
+                }
+                currentWord++;
+                if (currentWord == wordId.end()) // ------------------- Restart
+                    currentWord = wordId.begin();
+            }
+            else if (currentWord->status == Spell) // ================= SPELL
+            {
+                currentWord->status = Finish;
+                Find(currentWord->word).status = Finish;
+                currentWord->history.clear();
+                Find(currentWord->word).history.clear();
+                wordSp.erase(currentWord);
+                if (wordSp.isEmpty()) //-------------------------------- Exit
+                {
+                    mode = DefaultMode;
+                    AddNewDialog("blue", "You have completed the list.");
+                    return;
+                }
+                currentWord++;
+                if (currentWord == wordSp.end()) // ------------------- Restart
+                    currentWord = wordSp.begin();
+            }
         }
     }
     else if (arg == "fail")
     {
         currentWord->history.push_back('f');
+        Find(currentWord->word).history.push_back('f');
+        currentWord++;
+        if (currentWord == wordSp.end()) // [^]
+            currentWord = wordSp.begin();
+        if (currentWord == wordId.end())
+            currentWord = wordId.begin();
     }
     else
     {
@@ -520,6 +577,8 @@ void MainWindow::NextWord(QString arg)
 
         }
     }
+
+
 }
 
 QString MainWindow::Mask(QString & str)
