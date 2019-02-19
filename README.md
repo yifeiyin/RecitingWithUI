@@ -4,7 +4,7 @@ Project was design and built from Augest 27, 2017 to September 2, 2017
 This documentation was written on January 16, 2019
 
 I thought this project is incomplete until I accidentally steped on this on
-my local drive. It actually is a working program. I was pretty ambious about
+my local drive. It actually is a working program. I was pretty ambitious about
 this project at the time and spent a lot of time planning and designing
 the program. And now, I decided to create this readme you are reading.
 
