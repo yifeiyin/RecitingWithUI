@@ -1,6 +1,6 @@
 # RecitingWithUI
 
-Project was design and built from Augest 27, 2017 to September 2, 2017  
+Project was designed and built from Augest 27, 2017 to September 2, 2017  
 This documentation was written on January 16, 2019
 
 I thought this project is incomplete until I accidentally steped on this on
@@ -14,11 +14,11 @@ sure if I really used it or not. What I am sure about is that it improved my
 programming ability, specifically, with Qt Framework (using C++).
 
 ## Current Status
-1. It works, does not crash, most edge cases are handled properly.
-2. All the features I originally planned were correctly implemented (excepts tags).
-3. There are still things to improve or clean up. They are marked in oringal code.
-4. To perserve the story, I won't make any changes to the code,
-feel free to fork this repo and change it yourself.
+1. It works and most edge cases are handled properly.
+2. All features, except tags, originally planned were correctly implemented.
+3. There are still things to improve or clean up. They are marked in original code.
+4. I won't make any changes to the code, feel free to fork this repo and change it yourself.
+
 ### Known Issues
 - In `SpellMode`, the side list will not update. Just click the command box, it will refresh.
 - In `SpellMode`, the side list should be masked so that people cannot cheat.
@@ -30,6 +30,7 @@ feel free to fork this repo and change it yourself.
   - `[Identify]` `[Spell]` indicates the state of the word
   - letters after that (i.e. `pfpfpfpp`) indicates practice history (pass or fail)
   - Three consecutive `p`s will put the word into next stage. (identify -> spell -> finish)
+
 ### Available commands
   - `add <word>`
     - Add word to the list
@@ -48,6 +49,7 @@ feel free to fork this repo and change it yourself.
     - Save the list to a file
   - `start` `start-practice` `sp`
     - Start practice, getting into practice mode
+
 ### Parctice Mode (IdentifyMode, SpellMode)
   - If any of the words are still in `Identify` state, it is `IdentifyMode`
   - Otherwise (all words are in spell mode), it is spell mode.
