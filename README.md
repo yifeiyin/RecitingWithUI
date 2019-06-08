@@ -3,26 +3,26 @@
 Project was designed and built from Augest 27, 2017 to September 2, 2017  
 This documentation was written on January 16, 2019
 
+<!-- SOME THOUGHTS
 I thought this project is incomplete until I accidentally steped on this on
 my local drive. It actually is a working program. I was pretty ambitious about
 this project at the time and spent a lot of time planning and designing
 the program. And now, I decided to create this readme you are reading.
+-->
+
+## Screenshots
+### `addfrom`, `delete`
+![addfrom](https://raw.githubusercontent.com/yifeiyin/RecitingWithUI/master/readme-img/addfrom.png)
+### `add` `list` Identify Mode
+![identify](https://github.com/yifeiyin/RecitingWithUI/blob/master/readme-img/identify.png)
+### Spell Mode
+![spell](https://raw.githubusercontent.com/yifeiyin/RecitingWithUI/master/readme-img/spell.png)
 
 ## Purpose
 This program aims to help me learn new vocabulary and spellings but I am not 
 sure if I really used it or not. What I am sure about is that it improved my
 programming ability, specifically, with Qt Framework (using C++).
 
-## Current Status
-1. It works and most edge cases are handled properly.
-2. All features, except tags, originally planned were correctly implemented.
-3. There are still things to improve or clean up. They are marked in original code.
-4. I won't make any changes to the code, feel free to fork this repo and change it yourself.
-
-### Known Issues
-- In `SpellMode`, the side list will not update. Just click the command box, it will refresh.
-- In `SpellMode`, the side list should be masked so that people cannot cheat.
-- `tags` was in the data structure but it was not used.
 
 ## Usage
 - Down the bottom left, is the `inputBox` (or command line), you type whatever command there.
@@ -61,13 +61,17 @@ programming ability, specifically, with Qt Framework (using C++).
     - Type `y[es]` `n[o]` `p[ass]` `f[ail]` in the command line to create the record manually and goto the next word.
 
 
-## Screenshots
-### `addfrom`, `delete`
-![addfrom](https://raw.githubusercontent.com/yifeiyin/RecitingWithUI/master/readme-img/addfrom.png)
-### `add` `list` Identify Mode
-![identify](https://github.com/yifeiyin/RecitingWithUI/blob/master/readme-img/identify.png)
-### Spell Mode
-![spell](https://raw.githubusercontent.com/yifeiyin/RecitingWithUI/master/readme-img/spell.png)
+
+## Current Status
+1. It works and most edge cases are handled properly.
+2. All features, except tags, originally planned were correctly implemented.
+3. There are still things to improve or clean up. They are marked in original code.
+4. I won't make any changes to the code, feel free to fork this repo and change it yourself.
+
+### Known Issues
+- In `SpellMode`, the side list will not update. Just click the command box, it will refresh.
+- In `SpellMode`, the side list should be masked so that people cannot cheat.
+- `tags` was in the data structure but it was not used.
 
 
 ### License
